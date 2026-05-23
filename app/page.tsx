@@ -133,19 +133,14 @@ function FullScreenSingleImageUpdate({
   );
 }
 
-function getProjectHeroImage(
-  project:
-    | {
-        hero_image_url?: string | null;
-      }
-    | null
-    | undefined,
-) {
-  if (!project || !("hero_image_url" in project)) {
+function getProjectHeroImage(project: unknown) {
+  if (!project || typeof project !== "object" || !("hero_image_url" in project)) {
     return null;
   }
 
-  return project.hero_image_url || null;
+  const value = (project as { hero_image_url?: unknown }).hero_image_url;
+
+  return typeof value === "string" && value.trim() ? value : null;
 }
 
 function FullScreenCollage({

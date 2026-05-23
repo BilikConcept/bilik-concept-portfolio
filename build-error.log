@@ -6,34 +6,35 @@
 - Environments: .env.local
 
   Creating an optimized production build ...
+✓ Compiled successfully in 1899ms
+  Running TypeScript ...
+  Finished TypeScript in 1528ms ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/8) ...
+  Generating static pages using 7 workers (2/8) 
+  Generating static pages using 7 workers (4/8) 
+  Generating static pages using 7 workers (6/8) 
+✓ Generating static pages using 7 workers (8/8) in 122ms
+  Finalizing page optimization ...
 
-> Build error occurred
-Error: Turbopack build failed with 2 errors:
-./app/access/page.tsx:2:1
-The "use client" directive must be placed before other expressions. Move it to the top of the file to resolve this issue.
-  [90m1 |[0m [36mimport[0m [33mPublicBlackHeader[0m [36mfrom[0m [32m"@/components/PublicBlackHeader"[0m;
-[31m[1m>[0m [90m2 |[0m [32m"use client"[0m;
-  [90m  |[0m [31m[1m^^^^^^^^^^^^^[0m
-  [90m3 |[0m
-  [90m4 |[0m [36mimport[0m { [33mFormEvent[0m, useState } [36mfrom[0m [32m"react"[0m;
-  [90m5 |[0m
-
-Ecmascript file had an error
-
-
-./app/access/page.tsx:4:21
-You're importing a module that depends on `useState` into a React Server Component module. This API is only available in Client Components. To fix, mark the file (or its parent) with the `"use client"` directive.
-    Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
-  [90m2 |[0m [32m"use client"[0m;
-  [90m3 |[0m
-[31m[1m>[0m [90m4 |[0m [36mimport[0m { [33mFormEvent[0m, useState } [36mfrom[0m [32m"react"[0m;
-  [90m  |[0m                     [31m[1m^^^^^^^^[0m
-  [90m5 |[0m
-  [90m6 |[0m [36mexport[0m [36mdefault[0m [36mfunction[0m [33mAccessPage[0m() {
-  [90m7 |[0m   [36mconst[0m [pin, setPin] = useState([32m""[0m);
-
-Ecmascript file had an error
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ○ /access
+├ ƒ /api/access
+├ ○ /contact
+├ ƒ /editorial
+├ ƒ /editorial/[slug]
+├ ○ /services
+├ ƒ /stories
+├ ƒ /stories/[slug]
+├ ○ /studio
+├ ƒ /work
+└ ƒ /work/[slug]
 
 
-    at <unknown> (./app/access/page.tsx:2:1)
-    at <unknown> (./app/access/page.tsx:4:21)
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
