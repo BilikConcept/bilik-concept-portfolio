@@ -6,7 +6,7 @@ const items = [
   { id: "intro", label: "Intro" },
   { id: "updates", label: "APPLE HOUR" },
   { id: "editorial", label: "Editorial" },
-  { id: "index", label: "Index" },
+  { id: "index", label: "Selected Works©" },
 ];
 
 type HomeCatalogueNavProps = {
