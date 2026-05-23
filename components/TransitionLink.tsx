@@ -1,43 +1,57 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 
 type TransitionLinkProps = {
   href: string;
   label: string;
-  className?: string;
   children: ReactNode;
+  className?: string;
+  onClick?: () => void;
 };
 
 export default function TransitionLink({
   href,
   label,
-  className,
   children,
+  className = "",
+  onClick,
 }: TransitionLinkProps) {
   const router = useRouter();
 
-  function handleClick() {
-    document.body.classList.remove("page-has-entered");
-    document.body.classList.add("page-is-transitioning");
+  function handleClick(event: MouseEvent<HTMLAnchorElement>) {
+    if (
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey ||
+      event.button !== 0
+    ) {
+      return;
+    }
 
-    const event = new CustomEvent("bilik-page-transition", {
-      detail: {
-        label,
-      },
-    });
+    event.preventDefault();
 
-    window.dispatchEvent(event);
+    onClick?.();
+
+    document.documentElement.classList.add("page-is-leaving");
 
     window.setTimeout(() => {
       router.push(href);
-    }, 560);
+      document.documentElement.classList.remove("page-is-leaving");
+    }, 380);
   }
 
   return (
-    <button type="button" onClick={handleClick} className={className}>
+    <Link
+      href={href}
+      aria-label={label}
+      onClick={handleClick}
+      className={className}
+    >
       {children}
-    </button>
+    </Link>
   );
 }

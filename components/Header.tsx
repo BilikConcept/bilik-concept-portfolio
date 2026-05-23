@@ -1,189 +1,139 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import TransitionLink from "@/components/TransitionLink";
 
-const navItems = [
-  { label: "Work", href: "/work" },
-  { label: "Editorial", href: "/editorial" },
-  { label: "Services", href: "/services" },
-  { label: "Studio", href: "/studio" },
-  { label: "Contact", href: "/contact" },
+const menuItems = [
+  ["Work", "/work"],
+  ["Editorial", "/editorial"],
+  ["Studio", "/studio"],
+  ["Services", "/services"],
+  ["Contact", "/contact"],
 ];
 
 export default function Header() {
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [transitionLabel, setTransitionLabel] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    document.body.classList.add("page-has-entered");
-
-    const timeout = window.setTimeout(() => {
-      setIsTransitioning(false);
-      setTransitionLabel("");
-      document.body.classList.remove("page-is-transitioning");
-    }, 950);
-
-    return () => window.clearTimeout(timeout);
-  }, [pathname]);
-
-  useEffect(() => {
-    function handlePageTransition(event: Event) {
-      const customEvent = event as CustomEvent<{ label: string }>;
-
-      setTransitionLabel(customEvent.detail.label);
-      setIsTransitioning(true);
-    }
-
-    window.addEventListener("bilik-page-transition", handlePageTransition);
-
-    return () => {
-      window.removeEventListener("bilik-page-transition", handlePageTransition);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = isOpen ? "hidden" : "";
 
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isMenuOpen]);
-
-  function handleNavigation(href: string, label: string) {
-    if (href === pathname) {
-      setIsMenuOpen(false);
-      return;
-    }
-
-    setTransitionLabel(label);
-    setIsTransitioning(true);
-    setIsMenuOpen(false);
-
-    document.body.classList.remove("page-has-entered");
-    document.body.classList.add("page-is-transitioning");
-
-    window.setTimeout(() => {
-      router.push(href);
-    }, 560);
-  }
+  }, [isOpen]);
 
   return (
-    <>
-      <header className="fixed left-0 top-0 z-50 w-full bg-white/85 backdrop-blur-md">
-        <div className="mx-auto flex max-w-[1440px] items-center justify-between px-5 py-5 md:px-8">
+    <div
+      className="fixed left-0 top-0 z-[100] w-full"
+      onMouseLeave={() => setIsOpen(false)}
+    >
+      <header
+        className={`relative z-[120] transition-colors duration-300 ${
+          isOpen ? "bg-white text-black" : "bg-transparent text-white"
+        }`}
+      >
+        <div className="grid h-16 grid-cols-[1fr_auto_1fr] items-center px-5 md:h-20 md:px-8">
           <button
             type="button"
-            onClick={() => handleNavigation("/", "Bilik Concept")}
-            className="text-sm font-medium tracking-[-0.02em]"
+            onMouseEnter={() => setIsOpen(true)}
+            onClick={() => setIsOpen((current) => !current)}
+            className="group flex h-10 w-10 items-center justify-start"
+            aria-label="Open menu"
           >
-            Bilik Concept
+            <span className="grid w-7 gap-[5px]">
+              <span
+                className={`h-px w-7 transition-colors duration-300 ${
+                  isOpen ? "bg-black" : "bg-white"
+                }`}
+              />
+              <span
+                className={`h-px w-7 transition-colors duration-300 ${
+                  isOpen ? "bg-black" : "bg-white"
+                }`}
+              />
+              <span
+                className={`h-px w-7 transition-colors duration-300 ${
+                  isOpen ? "bg-black" : "bg-white"
+                }`}
+              />
+            </span>
           </button>
 
-          <nav className="hidden items-center gap-7 text-sm tracking-[-0.02em] text-[#555] md:flex">
-            {navItems.map((item) => (
-              <button
-                key={item.href}
-                type="button"
-                onClick={() => handleNavigation(item.href, item.label)}
-                className="transition-colors hover:text-black"
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
-
-          <button
-            type="button"
-            onClick={() => setIsMenuOpen((current) => !current)}
-            className="text-sm tracking-[-0.02em] text-[#555] md:hidden"
+          <TransitionLink
+            href="/"
+            label="Home"
+            className="flex justify-center"
+            onClick={() => setIsOpen(false)}
           >
-            {isMenuOpen ? "Close" : "Menu"}
-          </button>
+            <span
+              aria-label="Bilik Concept"
+              className={`block h-4 w-[120px] bg-current transition-colors duration-300 md:h-5 md:w-[150px] ${
+                isOpen ? "text-black" : "text-white"
+              }`}
+              style={{
+                WebkitMaskImage: "url('/bilik-logo.svg')",
+                maskImage: "url('/bilik-logo.svg')",
+                WebkitMaskRepeat: "no-repeat",
+                maskRepeat: "no-repeat",
+                WebkitMaskPosition: "center",
+                maskPosition: "center",
+                WebkitMaskSize: "contain",
+                maskSize: "contain",
+              }}
+            />
+          </TransitionLink>
+
+          <div className="justify-self-end text-[11px] uppercase tracking-[0.24em]">
+            2026
+          </div>
         </div>
       </header>
 
       <div
-        onClick={() => setIsMenuOpen(false)}
-        className={`fixed inset-0 z-[70] bg-white transition-all duration-700 md:hidden ${
-          isMenuOpen
-            ? "pointer-events-auto opacity-100"
-            : "pointer-events-none opacity-0"
+        className={`fixed left-0 top-16 z-[110] h-[calc(100svh-4rem)] w-full bg-white text-black transition-all duration-500 md:top-20 md:h-[calc(100svh-5rem)] md:w-[420px] ${
+          isOpen
+            ? "pointer-events-auto translate-x-0 opacity-100"
+            : "pointer-events-none -translate-x-full opacity-0"
         }`}
+        onMouseEnter={() => setIsOpen(true)}
       >
-        <div
-          onClick={(event) => event.stopPropagation()}
-          className="flex min-h-screen flex-col justify-between px-5 pb-8 pt-24"
-        >
-          <nav className="grid gap-3">
-            {navItems.map((item, index) => (
-              <button
-                key={item.href}
-                type="button"
-                onClick={() => handleNavigation(item.href, item.label)}
-                className={`grid grid-cols-[48px_1fr] border-t border-[#d9d9d4] pt-4 text-left transition-all duration-700 ${
-                  isMenuOpen
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-4 opacity-0"
-                }`}
-                style={{
-                  transitionDelay: isMenuOpen ? `${index * 70}ms` : "0ms",
-                }}
+        <div className="flex h-full flex-col justify-between px-5 pb-6 pt-8 md:px-8 md:pb-8 md:pt-10">
+          <nav className="grid gap-5">
+            {menuItems.map(([label, href], index) => (
+              <TransitionLink
+                key={href}
+                href={href}
+                label={label}
+                onClick={() => setIsOpen(false)}
+                className="group grid grid-cols-[40px_1fr] items-end border-b border-[#d9d9d4] pb-5"
               >
-                <span className="text-sm tracking-[-0.02em] text-[#777]">
+                <span className="text-[11px] uppercase tracking-[0.22em] text-[#777]">
                   {String(index + 1).padStart(2, "0")}
                 </span>
 
-                <span className="text-5xl leading-[0.95] tracking-[-0.07em] text-[#111]">
-                  {item.label}
+                <span className="text-4xl uppercase leading-[0.9] tracking-[-0.075em] transition-opacity group-hover:opacity-50 md:text-5xl">
+                  {label}
                 </span>
-              </button>
+              </TransitionLink>
             ))}
           </nav>
 
-          <div
-            className={`border-t border-[#d9d9d4] pt-5 transition-all duration-700 ${
-              isMenuOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-            }`}
-            style={{
-              transitionDelay: isMenuOpen ? "420ms" : "0ms",
-            }}
-          >
-            <p className="max-w-xs text-sm leading-[1.35] tracking-[-0.02em] text-[#555]">
-              Creative direction, content production and social media for visual
-              brands.
+          <div className="grid gap-6">
+            <p className="max-w-xs text-[11px] uppercase leading-[1.45] tracking-[0.22em] text-[#777]">
+              Visual direction / Content production / Social presence
             </p>
+
+            <TransitionLink
+              href="/contact"
+              label="Contact"
+              onClick={() => setIsOpen(false)}
+              className="text-[11px] uppercase tracking-[0.22em] text-[#555] transition-opacity hover:opacity-60"
+            >
+              Contact →
+            </TransitionLink>
           </div>
         </div>
       </div>
-
-      <div
-        className={`fixed inset-0 z-[100] flex items-center justify-center bg-white/75 backdrop-blur-2xl transition-all duration-700 ${
-          isTransitioning
-            ? "pointer-events-auto opacity-100"
-            : "pointer-events-none opacity-0"
-        }`}
-      >
-        <div
-          className={`transition-all duration-700 ${
-            isTransitioning
-              ? "translate-y-0 opacity-100 blur-0"
-              : "translate-y-3 opacity-0 blur-sm"
-          }`}
-        >
-          <p className="text-sm tracking-[-0.02em] text-[#111]">
-            Bilik Concept / {transitionLabel}
-          </p>
-        </div>
-      </div>
-    </>
+    </div>
   );
 }
