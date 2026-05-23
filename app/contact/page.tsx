@@ -1,6 +1,8 @@
+import PublicBlackHeader from "@/components/PublicBlackHeader";
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-white px-5 py-28 text-[#111111] md:px-8 md:py-36">
+      <PublicBlackHeader />
       <section className="mx-auto max-w-[1440px]">
         <div className="mb-16 grid gap-8 md:grid-cols-[0.55fr_1fr]">
           <p className="text-sm tracking-[-0.02em] text-[#555]">
@@ -19,10 +21,10 @@ export default function ContactPage() {
 
           <div>
             <a
-              href="mailto:office@wiktorbilik.pl"
+              href="mailto:office@bilikconcept.com"
               className="break-words text-5xl leading-[0.95] tracking-[-0.07em] hover:opacity-60 md:text-8xl"
             >
-              office@wiktorbilik.pl
+              office@bilikconcept.com
             </a>
 
             <p className="mt-10 max-w-xl text-xl leading-[1.25] tracking-[-0.045em] text-[#444] md:text-2xl">

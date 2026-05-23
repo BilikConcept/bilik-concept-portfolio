@@ -1,0 +1,94 @@
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error("Missing Supabase environment variables.");
+}
+
+export const publicGalleriesSupabase = createClient(
+  supabaseUrl,
+  supabaseAnonKey,
+  {
+    auth: {
+      persistSession: false,
+    },
+  },
+);
+
+export type PublicGallery = {
+  id: string;
+  section: "work" | "editorial";
+  title: string;
+  slug: string;
+  description: string | null;
+  cover_image_url: string | null;
+  status: "draft" | "published";
+  sort_order: number;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type PublicGalleryImage = {
+  id: string;
+  gallery_id: string;
+  image_url: string;
+  file_path: string | null;
+  caption: string | null;
+  alt: string | null;
+  orientation: "wide" | "landscape" | "portrait" | "square" | null;
+  sort_order: number;
+  created_at: string;
+};
+
+export async function getPublishedGalleries(section: "work" | "editorial") {
+  const { data, error } = await publicGalleriesSupabase
+    .from("bilik_public_galleries")
+    .select("*")
+    .eq("section", section)
+    .eq("status", "published")
+    .order("sort_order", { ascending: true })
+    .order("published_at", { ascending: false });
+
+  if (error) {
+    return [];
+  }
+
+  return (data || []) as PublicGallery[];
+}
+
+export async function getPublishedGalleryBySlug(
+  section: "work" | "editorial",
+  slug: string,
+) {
+  const { data, error } = await publicGalleriesSupabase
+    .from("bilik_public_galleries")
+    .select("*")
+    .eq("section", section)
+    .eq("slug", slug)
+    .eq("status", "published")
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return data as PublicGallery;
+}
+
+export async function getGalleryImages(galleryId: string) {
+  const { data, error } = await publicGalleriesSupabase
+    .from("bilik_public_gallery_images")
+    .select("*")
+    .eq("gallery_id", galleryId)
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    return [];
+  }
+
+  return (data || []) as PublicGalleryImage[];
+}

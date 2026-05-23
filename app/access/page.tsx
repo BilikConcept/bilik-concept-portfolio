@@ -1,3 +1,4 @@
+import PublicBlackHeader from "@/components/PublicBlackHeader";
 "use client";
 
 import { FormEvent, useState } from "react";
@@ -36,6 +37,7 @@ export default function AccessPage() {
 
   return (
     <main className="grid min-h-svh place-items-center bg-white px-5 text-black">
+      <PublicBlackHeader />
       <section className="w-full max-w-sm text-center">
         <div className="mb-14 flex justify-center">
           <span

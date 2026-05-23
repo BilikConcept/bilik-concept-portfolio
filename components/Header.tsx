@@ -5,6 +5,7 @@ import TransitionLink from "@/components/TransitionLink";
 
 const menuItems = [
   ["Work", "/work"],
+  ["Stories", "/stories"],
   ["Editorial", "/editorial"],
   ["Studio", "/studio"],
   ["Services", "/services"],
@@ -24,6 +25,7 @@ export default function Header() {
 
   return (
     <div
+      data-main-header
       className="fixed left-0 top-0 z-[100] w-full"
       onMouseLeave={() => setIsOpen(false)}
     >

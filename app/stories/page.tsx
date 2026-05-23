@@ -1,41 +1,44 @@
-import Link from "next/link";
 import PublicBlackHeader from "@/components/PublicBlackHeader";
-import { getPublishedGalleries } from "@/lib/public-galleries";
+import Link from "next/link";
+import { getPublishedStories } from "@/lib/bilik-stories";
 
-export default async function EditorialPage() {
-  const galleries = await getPublishedGalleries("editorial");
+export default async function StoriesPage() {
+  const stories = await getPublishedStories();
 
   return (
     <main className="min-h-screen bg-white text-black">
       <PublicBlackHeader />
 
-      <section className="mx-auto grid min-h-screen w-full max-w-[1680px] content-between px-5 pb-10 pt-28 md:px-8">
-        <div>
+
+
+      <section className="mx-auto grid min-h-screen w-full max-w-[1680px] content-between px-5 py-8 md:px-8">
+
+        <div className="py-20">
           <p className="mb-6 text-[10px] uppercase tracking-[0.42em] text-black/35">
-            Bilik Concept / Editorial
+            Editorial archive
           </p>
 
           <h1 className="max-w-5xl text-6xl font-medium leading-[0.86] tracking-[-0.08em] md:text-[9rem]">
-            Editorial
+            Stories from
             <br />
-            archive.
+            the studio.
           </h1>
         </div>
 
-        {galleries.length > 0 ? (
+        {stories.length > 0 ? (
           <section className="grid gap-5 border-t border-black pt-5 md:grid-cols-3">
-            {galleries.map((gallery) => (
+            {stories.map((story) => (
               <Link
-                key={gallery.id}
-                href={`/editorial/${gallery.slug}`}
+                key={story.id}
+                href={`/stories/${story.slug}`}
                 className="group grid gap-4"
               >
                 <div className="aspect-[4/5] overflow-hidden bg-[#efefec]">
-                  {gallery.cover_image_url ? (
+                  {story.hero_image_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={gallery.cover_image_url}
-                      alt={gallery.title}
+                      src={story.hero_image_url}
+                      alt={story.title}
                       className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"
                     />
                   ) : null}
@@ -43,16 +46,16 @@ export default async function EditorialPage() {
 
                 <div>
                   <p className="mb-3 text-[10px] uppercase tracking-[0.28em] text-black/35">
-                    Editorial / Gallery
+                    {story.eyebrow || "Bilik Concept Story"}
                   </p>
 
-                  <h2 className="text-4xl font-medium leading-[0.88] tracking-[-0.07em]">
-                    {gallery.title}
+                  <h2 className="text-3xl font-medium leading-[0.92] tracking-[-0.065em]">
+                    {story.title}
                   </h2>
 
-                  {gallery.description ? (
+                  {story.lead ? (
                     <p className="mt-4 max-w-md text-sm leading-5 text-black/50">
-                      {gallery.description}
+                      {story.lead}
                     </p>
                   ) : null}
                 </div>
@@ -62,7 +65,7 @@ export default async function EditorialPage() {
         ) : (
           <section className="border-t border-black pt-8">
             <p className="text-sm text-black/45">
-              No published editorial galleries yet.
+              No published stories yet.
             </p>
           </section>
         )}

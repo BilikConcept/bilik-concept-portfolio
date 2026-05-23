@@ -4,13 +4,25 @@ import { useEffect, useState } from "react";
 
 const items = [
   { id: "intro", label: "Intro" },
-  { id: "updates", label: "Updates" },
+  { id: "updates", label: "APPLE HOUR" },
   { id: "editorial", label: "Editorial" },
   { id: "index", label: "Index" },
 ];
 
-export default function HomeCatalogueNav() {
+type HomeCatalogueNavProps = {
+  forceBlack?: boolean;
+};
+
+export default function HomeCatalogueNav({
+  forceBlack = false,
+}: HomeCatalogueNavProps) {
   const [activeId, setActiveId] = useState(items[0].id);
+
+  const navTone = forceBlack ? "text-black" : "text-white";
+  const inactiveTone = forceBlack ? "opacity-50" : "opacity-70";
+  const activeStroke = forceBlack
+    ? "0.9px rgba(0,0,0,1)"
+    : "0.9px rgba(255,255,255,1)";
 
   useEffect(() => {
     const scrollRoot = document.querySelector("[data-home-scroll]");
@@ -49,7 +61,9 @@ export default function HomeCatalogueNav() {
 
   return (
     <nav className="pointer-events-none fixed bottom-8 left-0 right-0 z-[9999] hidden px-5 md:block md:px-8">
-      <div className="mx-auto flex max-w-[1760px] items-center justify-center gap-12 text-white">
+      <div
+        className={`mx-auto flex max-w-[1760px] items-center justify-center gap-12 ${navTone}`}
+      >
         {items.map((item) => {
           const isActive = activeId === item.id;
 
@@ -58,16 +72,14 @@ export default function HomeCatalogueNav() {
               key={item.id}
               type="button"
               onClick={() => scrollToSection(item.id)}
-              className={`pointer-events-auto font-sans text-[16px] uppercase tracking-[0.16em] text-white transition-all duration-300 ${
+              className={`pointer-events-auto font-sans text-[16px] uppercase tracking-[0.16em] ${navTone} transition-all duration-300 ${
                 isActive
                   ? "scale-[1.16] font-[2000] opacity-100"
-                  : "font-semibold opacity-70 hover:opacity-100"
+                  : `font-semibold ${inactiveTone} hover:opacity-100`
               }`}
               style={{
                 textShadow: "none",
-                WebkitTextStroke: isActive
-                  ? "0.9px rgba(255,255,255,1)"
-                  : "0px rgba(255,255,255,0)",
+                WebkitTextStroke: isActive ? activeStroke : "0px transparent",
               }}
             >
               {item.label}

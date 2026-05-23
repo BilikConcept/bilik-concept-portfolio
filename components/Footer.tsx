@@ -8,10 +8,10 @@ export default function Footer() {
           </p>
 
           <a
-            href="mailto:office@wiktorbilik.pl"
+            href="mailto:office@bilikconcept.com"
             className="break-words text-4xl leading-[0.95] tracking-[-0.06em] hover:opacity-60 md:text-7xl"
           >
-            office@wiktorbilik.pl
+            office@bilikconcept.com
           </a>
         </div>
 

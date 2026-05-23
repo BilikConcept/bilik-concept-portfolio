@@ -1,114 +1,218 @@
-import CaseStudyGallery from "@/components/CaseStudyGallery";
-import { getProjectBySlug, getProjectMedia } from "@/lib/workspace";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import PublicBlackHeader from "@/components/PublicBlackHeader";
+import {
+  getGalleryImages,
+  getPublishedGalleryBySlug,
+  type PublicGalleryImage,
+} from "@/lib/public-galleries";
 
-type WorkDetailPageProps = {
+type PageProps = {
   params: Promise<{
     slug: string;
   }>;
 };
 
-export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
-  const { slug } = await params;
-  const project = await getProjectBySlug(slug);
-  const media = await getProjectMedia(project.id);
+function GalleryImage({
+  image,
+  title,
+  className = "",
+  imageClassName = "",
+  showCaption = true,
+}: {
+  image: PublicGalleryImage;
+  title: string;
+  className?: string;
+  imageClassName?: string;
+  showCaption?: boolean;
+}) {
+  return (
+    <figure className={`grid gap-3 ${className}`}>
+      <div className={`overflow-hidden bg-[#efefec] ${imageClassName}`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={image.image_url}
+          alt={image.alt || image.caption || title}
+          className="h-auto w-full"
+        />
+      </div>
 
-  const galleryItems =
-    media.length > 0
-      ? media.map((item) => ({
-          label: item.alt ?? "Project image",
-          orientation: item.orientation ?? "landscape",
-          caption: item.caption ?? undefined,
-          imageUrl: item.image_url,
-        }))
-      : [
-          {
-            label: "Full width campaign visual",
-            orientation: "wide" as const,
-          },
-          {
-            label: "Editorial image 01",
-            orientation: "portrait" as const,
-          },
-          {
-            label: "Detail image",
-            orientation: "portrait" as const,
-            caption:
-              "A visual rhythm built around atmosphere, composition and quiet brand moments.",
-          },
-          {
-            label: "Behind the scenes",
-            orientation: "square" as const,
-          },
-          {
-            label: "Final visual direction",
-            orientation: "landscape" as const,
-          },
-        ];
+      {showCaption && image.caption ? (
+        <figcaption className="max-w-xl text-[10px] uppercase tracking-[0.22em] text-black/40">
+          {image.caption}
+        </figcaption>
+      ) : null}
+    </figure>
+  );
+}
+
+function EditorialGallery({
+  images,
+  title,
+}: {
+  images: PublicGalleryImage[];
+  title: string;
+}) {
+  return (
+    <section className="mx-auto grid w-full max-w-[1680px] gap-5 px-5 pb-12 md:px-8">
+      {images.map((image, index) => {
+        const pattern = index % 6;
+
+        if (pattern === 0) {
+          return (
+            <GalleryImage
+              key={image.id}
+              image={image}
+              title={title}
+              imageClassName=""
+            />
+          );
+        }
+
+        if (pattern === 1) {
+          const nextImage = images[index + 1];
+
+          if (!nextImage) {
+            return (
+              <GalleryImage
+                key={image.id}
+                image={image}
+                title={title}
+                className="md:w-[58%]"
+                imageClassName=""
+              />
+            );
+          }
+
+          return (
+            <div key={image.id} className="grid gap-5 md:grid-cols-2">
+              <GalleryImage
+                image={image}
+                title={title}
+                imageClassName=""
+              />
+
+              <GalleryImage
+                image={nextImage}
+                title={title}
+                imageClassName=""
+              />
+            </div>
+          );
+        }
+
+        if (pattern === 2) {
+          return null;
+        }
+
+        if (pattern === 3) {
+          return (
+            <div key={image.id} className="grid gap-5 md:grid-cols-[0.38fr_0.62fr] md:items-end">
+              <div className="hidden md:block">
+                <p className="max-w-xs text-[10px] uppercase leading-[1.45] tracking-[0.24em] text-black/35">
+                  Visual archive / Selected frame / Bilik Concept
+                </p>
+              </div>
+
+              <GalleryImage
+                image={image}
+                title={title}
+                imageClassName=""
+              />
+            </div>
+          );
+        }
+
+        if (pattern === 4) {
+          return (
+            <GalleryImage
+              key={image.id}
+              image={image}
+              title={title}
+              className="md:ml-auto md:w-[46%]"
+              imageClassName=""
+            />
+          );
+        }
+
+        return (
+          <GalleryImage
+            key={image.id}
+            image={image}
+            title={title}
+            className="md:w-[62%]"
+            imageClassName=""
+          />
+        );
+      })}
+    </section>
+  );
+}
+
+export default async function WorkGalleryPage({ params }: PageProps) {
+  const { slug } = await params;
+  const gallery = await getPublishedGalleryBySlug("work", slug);
+
+  if (!gallery) {
+    notFound();
+  }
+
+  const images = await getGalleryImages(gallery.id);
+  const heroImage = gallery.cover_image_url || images[0]?.image_url || null;
 
   return (
-    <main className="min-h-screen bg-white px-5 py-28 text-[#111111] md:px-8 md:py-36">
-      <section className="mx-auto max-w-[1440px]">
-        <div className="mb-14 grid gap-8 md:grid-cols-[0.55fr_1fr]">
-          <div>
-            <p className="mb-4 text-sm tracking-[-0.02em] text-[#555]">
-              Case study
-            </p>
-            <p className="text-sm tracking-[-0.02em] text-[#777]">
-              {project.category}
-            </p>
-          </div>
+    <main className="min-h-screen bg-white text-black">
+      <PublicBlackHeader />
 
-          <h1 className="max-w-5xl text-6xl font-normal leading-[0.9] tracking-[-0.08em] md:text-9xl">
-            {project.title}
-          </h1>
-        </div>
+      <article>
+        <section className="grid min-h-screen content-end px-5 pb-10 pt-28 md:px-8">
+          <div className="mx-auto grid w-full max-w-[1680px] gap-8 md:grid-cols-[0.42fr_0.58fr] md:items-end">
+            <div>
+              <Link
+                href="/work"
+                className="mb-8 inline-flex text-[10px] uppercase tracking-[0.28em] text-black/45 transition hover:text-black"
+              >
+                Work
+              </Link>
 
-        <div className="mb-16 aspect-[16/8] bg-[#f1f1ef]">
-          <div className="flex h-full items-center justify-center px-6 text-center">
-            <p className="text-sm tracking-[-0.02em] text-[#777]">
-              Hero project image
-            </p>
-          </div>
-        </div>
+              <p className="mb-6 text-[10px] uppercase tracking-[0.42em] text-black/35">
+                Gallery / Work
+              </p>
 
-        <div className="grid gap-12 border-y border-[#d9d9d4] py-12 md:grid-cols-[0.55fr_1fr] md:py-16">
-          <p className="text-sm tracking-[-0.02em] text-[#555]">
-            Project note
-          </p>
+              <h1 className="text-6xl font-medium leading-[0.86] tracking-[-0.08em] md:text-[8rem]">
+                {gallery.title}
+              </h1>
 
-          <p className="max-w-5xl text-3xl leading-[1.02] tracking-[-0.06em] md:text-6xl">
-            {project.full_description ?? project.short_description}
-          </p>
-        </div>
+              {gallery.description ? (
+                <p className="mt-8 max-w-md text-base leading-[1.35] tracking-[-0.03em] text-black/55">
+                  {gallery.description}
+                </p>
+              ) : null}
+            </div>
 
-        <div className="grid gap-10 py-16 md:grid-cols-[0.55fr_1fr] md:py-24">
-          <div>
-            <p className="mb-5 text-sm tracking-[-0.02em] text-[#555]">
-              Scope
-            </p>
-
-            <div className="grid gap-2 text-sm tracking-[-0.02em] text-[#555]">
-              {(project.services ?? []).map((service) => (
-                <p key={service}>{service}</p>
-              ))}
+            <div className="overflow-hidden bg-[#efefec]">
+              {heroImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={heroImage}
+                  alt={gallery.title}
+                  className="h-auto w-full"
+                />
+              ) : null}
             </div>
           </div>
+        </section>
 
-          <div className="grid gap-6 text-xl leading-[1.3] tracking-[-0.045em] text-[#333] md:grid-cols-2 md:text-2xl">
-            <p>{project.short_description}</p>
-
-            <p>
-              {project.client_name
-                ? `Created for ${project.client_name}${
-                    project.year ? ` in ${project.year}` : ""
-                  }.`
-                : "Created as part of the Bilik Concept visual direction archive."}
+        {images.length > 0 ? (
+          <EditorialGallery images={images} title={gallery.title} />
+        ) : (
+          <section className="mx-auto max-w-[1680px] px-5 pb-16 md:px-8">
+            <p className="border-t border-black pt-8 text-sm text-black/45">
+              This gallery has no images yet.
             </p>
-          </div>
-        </div>
-
-        <CaseStudyGallery items={galleryItems} />
-      </section>
+          </section>
+        )}
+      </article>
     </main>
   );
 }

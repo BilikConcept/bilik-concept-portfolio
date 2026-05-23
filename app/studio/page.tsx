@@ -1,6 +1,8 @@
+import PublicBlackHeader from "@/components/PublicBlackHeader";
 export default function StudioPage() {
   return (
     <main className="min-h-screen bg-white px-5 py-28 text-[#111111] md:px-8 md:py-36">
+      <PublicBlackHeader />
       <section className="mx-auto max-w-[1440px]">
         <div className="mb-16 grid gap-8 md:grid-cols-[0.55fr_1fr]">
           <p className="text-sm tracking-[-0.02em] text-[#555]">
