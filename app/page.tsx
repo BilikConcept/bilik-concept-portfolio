@@ -79,18 +79,19 @@ function FullScreenCollage({
 
       <div className="pointer-events-none absolute inset-0 z-10 bg-black/10" />
 
-      <div className="pointer-events-none absolute inset-x-0 top-1/2 z-20 mx-auto grid max-w-[1500px] -translate-y-1/2 px-5 text-center text-white md:px-8">
-        <h2 className="text-[13vw] font-bold leading-[0.9] tracking-[-0.075em] drop-shadow-[0_2px_14px_rgba(0,0,0,0.35)] md:text-[7vw] xl:text-[104px]">
+      <div className="pointer-events-none absolute inset-x-0 top-1/2 z-20 mx-auto grid max-w-[900px] -translate-y-1/2 px-5 text-center text-white md:px-8">
+        <h2 className="text-[30px] font-bold leading-[1] tracking-[-0.045em] drop-shadow-[0_2px_10px_rgba(0,0,0,0.35)] md:text-[36px] xl:text-[40px]">
           {title || "Bilik Concept Updates"}
         </h2>
 
-        <p className="mx-auto mt-6 max-w-5xl text-[4.7vw] font-bold uppercase leading-[1.15] tracking-[-0.045em] drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)] md:mt-8 md:text-[2.2vw] xl:text-[34px]">
+        <p className="mx-auto mt-4 max-w-[720px] text-[13px] font-bold uppercase leading-[1.2] tracking-[-0.02em] drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)] md:text-[15px] xl:text-[16px]">
           The latest visual notes for the{" "}
-          <span className="font-serif-display italic font-normal normal-case tracking-[-0.04em]">
+          <span className="font-serif-display italic font-normal normal-case tracking-[-0.03em]">
             brand world
-          </span>{" "}
-          and for the{" "}
-          <span className="font-serif-display italic font-normal normal-case tracking-[-0.04em]">
+          </span>
+          <br />
+          designed for the{" "}
+          <span className="font-serif-display italic font-normal normal-case tracking-[-0.03em]">
             community
           </span>
           .
