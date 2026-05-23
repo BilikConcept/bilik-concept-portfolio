@@ -1,6 +1,7 @@
 import HomeCatalogueNav from "@/components/HomeCatalogueNav";
 import {
   getLatestArticle,
+  getPortfolioProjectById,
   getPublishedProjects,
   getSiteSetting,
 } from "@/lib/workspace";
@@ -39,13 +40,53 @@ function FullScreenCollage({
   leftImageUrl,
   rightImageUrl,
   title,
+  description,
+  href,
 }: {
   id: string;
   label: string;
   leftImageUrl?: string | null;
   rightImageUrl?: string | null;
-  title?: string;
+  title?: string | null;
+  description?: string | null;
+  href?: string;
 }) {
+  const cleanDescription =
+    description?.trim() ||
+    "Visual direction and content production for brands with atmosphere.";
+
+  const descriptionWords = cleanDescription
+    .replace(/\s+/g, " ")
+    .split(" ")
+    .filter(Boolean);
+
+  const splitIndex = Math.max(3, Math.ceil(descriptionWords.length / 2));
+  const firstLine = descriptionWords.slice(0, splitIndex);
+  const secondLine = descriptionWords.slice(splitIndex);
+
+  function renderMixedLine(words: string[], serifIndex: number) {
+    return words.map((word, index) => {
+      const isSerif = index === serifIndex;
+
+      return (
+        <span
+          key={`${word}-${index}`}
+          className={
+            isSerif
+              ? "font-serif-display italic font-normal tracking-[-0.03em]"
+              : "font-sans font-medium tracking-[-0.015em]"
+          }
+        >
+          {word}
+          {index < words.length - 1 ? " " : ""}
+        </span>
+      );
+    });
+  }
+
+  const firstLineSerifIndex = Math.max(0, firstLine.length - 2);
+  const secondLineSerifIndex = secondLine.length > 1 ? 1 : 0;
+
   return (
     <section
       id={id}
@@ -80,40 +121,51 @@ function FullScreenCollage({
       <div className="pointer-events-none absolute inset-0 z-10 bg-black/10" />
 
       <div className="pointer-events-none absolute inset-x-0 top-1/2 z-20 mx-auto grid max-w-[900px] -translate-y-1/2 px-5 text-center text-white md:px-8">
-        <h2 className="text-[30px] font-bold leading-[1] tracking-[-0.045em] drop-shadow-[0_2px_10px_rgba(0,0,0,0.35)] md:text-[36px] xl:text-[40px]">
+        <h2 className="text-[30px] font-semibold leading-[1] tracking-[-0.045em] drop-shadow-[0_2px_10px_rgba(0,0,0,0.35)] md:text-[36px] xl:text-[40px]">
           {title || "Bilik Concept Updates"}
         </h2>
 
-        <p className="mx-auto mt-4 max-w-[720px] text-[13px] font-bold uppercase leading-[1.2] tracking-[-0.02em] drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)] md:text-[15px] xl:text-[16px]">
-          The latest visual notes for the{" "}
-          <span className="font-serif-display italic font-normal normal-case tracking-[-0.03em]">
-            brand world
-          </span>
+        <p className="mx-auto mt-4 max-w-[720px] text-[13px] leading-[1.25] drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)] md:text-[15px] xl:text-[16px]">
+          {renderMixedLine(firstLine, firstLineSerifIndex)}
           <br />
-          designed for the{" "}
-          <span className="font-serif-display italic font-normal normal-case tracking-[-0.03em]">
-            community
-          </span>
-          .
+          {renderMixedLine(secondLine, secondLineSerifIndex)}
         </p>
+
+        <a
+          href={href || "/work"}
+          className="pointer-events-auto mx-auto mt-7 inline-flex text-[11px] font-semibold uppercase tracking-[0.22em] text-white transition-opacity hover:opacity-60"
+        >
+          Read the story
+        </a>
       </div>
     </section>
   );
 }
 
+
 export default async function Home() {
-  const [latestArticle, projects, homepageHeroImageUrl, updatesSideImageUrl] =
-    await Promise.all([
-      getLatestArticle(),
-      getPublishedProjects(),
-      getSiteSetting("homepage_hero_image_url"),
-      getSiteSetting("updates_side_image_url"),
-    ]);
+  const [
+    latestArticle,
+    projects,
+    homepageHeroImageUrl,
+    updatesSideImageUrl,
+    updatesProjectId,
+  ] = await Promise.all([
+    getLatestArticle(),
+    getPublishedProjects(),
+    getSiteSetting("homepage_hero_image_url"),
+    getSiteSetting("updates_side_image_url"),
+    getSiteSetting("updates_project_id"),
+  ]);
 
   const featuredProjects = projects.slice(0, 4);
   const heroProject = featuredProjects[0];
   const secondProject = featuredProjects[1];
   const thirdProject = featuredProjects[2];
+
+  const updatesProject = updatesProjectId
+    ? await getPortfolioProjectById(updatesProjectId)
+    : heroProject;
 
   return (
     <>
@@ -132,7 +184,9 @@ export default async function Home() {
         <FullScreenCollage
           id="updates"
           label="Bilik Concept latest update"
-          title={latestArticle.title || "Bilik Concept Updates"}
+          title={updatesProject?.title || latestArticle.title}
+          description={updatesProject?.short_description}
+          href={updatesProject?.slug ? `/work/${updatesProject.slug}` : "/work"}
           leftImageUrl={
             latestArticle.hero_image_url ||
             heroProject?.hero_image_url ||
@@ -140,6 +194,7 @@ export default async function Home() {
           }
           rightImageUrl={
             updatesSideImageUrl ||
+            updatesProject?.hero_image_url ||
             secondProject?.hero_image_url ||
             heroProject?.hero_image_url ||
             homepageHeroImageUrl

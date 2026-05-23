@@ -58,7 +58,7 @@ export async function getPublishedProjects() {
       title: project.title,
       slug: project.slug.replace("/work/", ""),
       category: project.category,
-      short_description: project.description,
+      short_description: project.short_description,
       full_description: project.description,
       client_name: null,
       year: null,
@@ -125,7 +125,7 @@ export async function getProjectBySlug(slug: string) {
       title: fallback.title,
       slug,
       category: fallback.category,
-      short_description: fallback.description,
+      short_description: fallback.short_description,
       full_description: fallback.description,
       client_name: null,
       year: null,
@@ -216,4 +216,26 @@ export async function getSiteSetting(key: string) {
   }
 
   return data.value as string | null;
+}
+
+
+export async function getPortfolioProjectById(id: string) {
+  const { data, error } = await supabase
+    .from("portfolio_projects")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return {
+    id: data.id,
+    title: data.title,
+    slug: data.slug,
+    category: data.category,
+    short_description: data.short_description,
+    hero_image_url: data.hero_image_url,
+  };
 }
