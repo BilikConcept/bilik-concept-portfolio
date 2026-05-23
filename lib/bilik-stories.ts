@@ -3,16 +3,6 @@ import { createClient } from "@supabase/supabase-js";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error("Missing Supabase environment variables.");
-}
-
-export const storiesSupabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: false,
-  },
-});
-
 export type BilikStory = {
   id: string;
   title: string;
@@ -54,8 +44,26 @@ export type BilikStoryBlock = {
   content_json: StoryBlockContent;
 };
 
+function getSupabaseClient() {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return null;
+  }
+
+  return createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      persistSession: false,
+    },
+  });
+}
+
 export async function getPublishedStories() {
-  const { data, error } = await storiesSupabase
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    return [];
+  }
+
+  const { data, error } = await supabase
     .from("bilik_stories")
     .select("*")
     .eq("status", "published")
@@ -69,7 +77,13 @@ export async function getPublishedStories() {
 }
 
 export async function getPublishedStoryBySlug(slug: string) {
-  const { data, error } = await storiesSupabase
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    return null;
+  }
+
+  const { data, error } = await supabase
     .from("bilik_stories")
     .select("*")
     .eq("slug", slug)
@@ -84,7 +98,13 @@ export async function getPublishedStoryBySlug(slug: string) {
 }
 
 export async function getStoryBlocks(storyId: string) {
-  const { data, error } = await storiesSupabase
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    return [];
+  }
+
+  const { data, error } = await supabase
     .from("bilik_story_blocks")
     .select("*")
     .eq("story_id", storyId)

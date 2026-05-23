@@ -3,20 +3,6 @@ import { createClient } from "@supabase/supabase-js";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error("Missing Supabase environment variables.");
-}
-
-export const publicGalleriesSupabase = createClient(
-  supabaseUrl,
-  supabaseAnonKey,
-  {
-    auth: {
-      persistSession: false,
-    },
-  },
-);
-
 export type PublicGallery = {
   id: string;
   section: "work" | "editorial";
@@ -43,8 +29,26 @@ export type PublicGalleryImage = {
   created_at: string;
 };
 
+function getSupabaseClient() {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return null;
+  }
+
+  return createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      persistSession: false,
+    },
+  });
+}
+
 export async function getPublishedGalleries(section: "work" | "editorial") {
-  const { data, error } = await publicGalleriesSupabase
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    return [];
+  }
+
+  const { data, error } = await supabase
     .from("bilik_public_galleries")
     .select("*")
     .eq("section", section)
@@ -63,7 +67,13 @@ export async function getPublishedGalleryBySlug(
   section: "work" | "editorial",
   slug: string,
 ) {
-  const { data, error } = await publicGalleriesSupabase
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    return null;
+  }
+
+  const { data, error } = await supabase
     .from("bilik_public_galleries")
     .select("*")
     .eq("section", section)
@@ -79,7 +89,13 @@ export async function getPublishedGalleryBySlug(
 }
 
 export async function getGalleryImages(galleryId: string) {
-  const { data, error } = await publicGalleriesSupabase
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    return [];
+  }
+
+  const { data, error } = await supabase
     .from("bilik_public_gallery_images")
     .select("*")
     .eq("gallery_id", galleryId)
