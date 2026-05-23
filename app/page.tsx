@@ -374,7 +374,12 @@ export default async function Home() {
   const thirdProject = projects[2];
 
   const updatesProject =
-    projects.find((project) => project.id === updatesProjectId) ||
+    projects.find(
+      (project) =>
+        "id" in project &&
+        typeof project.id === "string" &&
+        project.id === updatesProjectId,
+    ) ||
     (updatesProjectId ? await getPortfolioProjectById(updatesProjectId) : null) ||
     heroProject;
 

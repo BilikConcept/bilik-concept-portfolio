@@ -1,6 +1,6 @@
-import PublicBlackHeader from "@/components/PublicBlackHeader";
 "use client";
 
+import PublicBlackHeader from "@/components/PublicBlackHeader";
 import { FormEvent, useState } from "react";
 
 export default function AccessPage() {
