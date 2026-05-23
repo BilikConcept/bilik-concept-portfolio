@@ -1,10 +1,8 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useSearchParams } from "next/navigation";
 
 export default function AccessPage() {
-  const searchParams = useSearchParams();
   const [pin, setPin] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,7 +28,9 @@ export default function AccessPage() {
       return;
     }
 
+    const searchParams = new URLSearchParams(window.location.search);
     const from = searchParams.get("from") || "/";
+
     window.location.href = from;
   }
 
