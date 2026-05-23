@@ -1,3 +1,4 @@
+import { createClient } from "@supabase/supabase-js";
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import {
@@ -5,6 +6,21 @@ import {
   latestArticle as fallbackLatestArticle,
   projects as fallbackProjects,
 } from "@/lib/content";
+
+function getSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return null;
+  }
+
+  return createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      persistSession: false,
+    },
+  });
+}
 
 export type PortfolioProject = {
   id?: string;
@@ -46,6 +62,13 @@ export type PortfolioMedia = {
 };
 
 export async function getPublishedProjects() {
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    return fallbackProjects || [];
+  }
+
+
   const { data, error } = await supabase
     .from("portfolio_projects")
     .select("*")
@@ -92,6 +115,13 @@ export async function getPublishedArticles() {
 }
 
 export async function getLatestArticle() {
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    return null;
+  }
+
+
   const articles = await getPublishedArticles();
 
   return articles[0] ?? {
@@ -205,6 +235,13 @@ export async function getArticleMedia(articleId?: string) {
 
 
 export async function getSiteSetting(key: string) {
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    return null;
+  }
+
+
   const { data, error } = await supabase
     .from("site_settings")
     .select("value")
@@ -220,6 +257,13 @@ export async function getSiteSetting(key: string) {
 
 
 export async function getPortfolioProjectById(id: string) {
+  const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    return null;
+  }
+
+
   const { data, error } = await supabase
     .from("portfolio_projects")
     .select("*")

@@ -19,13 +19,13 @@ export default async function StoriesPage() {
           </p>
 
           <h1 className="max-w-5xl text-6xl font-medium leading-[0.86] tracking-[-0.08em] md:text-[9rem]">
-            Apple
+            Stories
             <br />
-            Hour™.
+            Updates.
           </h1>
 
           <p className="mt-8 max-w-md text-sm leading-6 text-black/50">
-            Editorial notes, visual stories, collaborations and studio updates
+            Editorial articles, visual updates, collaborations and studio notes
             from Bilik Concept.
           </p>
         </div>
@@ -51,7 +51,7 @@ export default async function StoriesPage() {
 
                 <div>
                   <p className="mb-3 text-[10px] uppercase tracking-[0.28em] text-black/35">
-                    {story.eyebrow || "Apple Hour™"}
+                    {story.eyebrow || "Stories Update"}
                   </p>
 
                   <h2 className="text-4xl font-medium leading-[0.88] tracking-[-0.07em]">

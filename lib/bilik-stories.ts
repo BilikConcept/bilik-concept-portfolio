@@ -15,6 +15,9 @@ export type BilikStory = {
   layout_variant: string | null;
   typography_variant: string | null;
   status: string;
+  show_on_homepage: boolean | null;
+  homepage_nav_label: string | null;
+  homepage_sort_order: number | null;
   published_at: string | null;
   created_at?: string | null;
 };

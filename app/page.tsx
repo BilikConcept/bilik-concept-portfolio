@@ -388,7 +388,21 @@ export default async function Home() {
 
   const latestWork = workGalleries[0];
   const latestEditorial = editorialGalleries[0];
-  const latestArticle = stories[0];
+
+  const homepageStories = stories
+    .filter((story) => story.show_on_homepage)
+    .sort(
+      (a, b) =>
+        (a.homepage_sort_order || 10) - (b.homepage_sort_order || 10),
+    );
+
+  const visibleHomepageStories =
+    homepageStories.length > 0 ? homepageStories : stories.slice(0, 1);
+
+  const homepageStoryNavItems = visibleHomepageStories.map((story, index) => ({
+    id: `story-${story.slug || index}`,
+    label: story.homepage_nav_label?.trim() || story.title || "Stories Update",
+  }));
 
   const latestWorkProjects = workGalleries.map((gallery) => ({
     id: gallery.id,
@@ -407,7 +421,7 @@ export default async function Home() {
 
   return (
     <>
-      <HomeCatalogueNav />
+      <HomeCatalogueNav storyItems={homepageStoryNavItems} />
 
       <main
         data-home-scroll
@@ -423,21 +437,24 @@ export default async function Home() {
           }
         />
 
-        <FullScreenSingleImageUpdate
-          id="updates"
-          label="Bilik Concept latest article"
-          title={latestArticle?.title || "Latest update"}
-          description={
-            latestArticle?.lead ||
-            "Stories, collaborations and visual notes from the studio."
-          }
-          href={latestArticle?.slug ? `/stories/${latestArticle.slug}` : "/stories"}
-          imageUrl={
-            latestArticle?.hero_image_url ||
-            updatesProject?.hero_image_url ||
-            homepageHeroImageUrl
-          }
-        />
+        {visibleHomepageStories.map((story, index) => (
+          <FullScreenSingleImageUpdate
+            key={story.id}
+            id={`story-${story.slug || index}`}
+            label={story.title || "Bilik Concept story"}
+            title={story.title || "Latest update"}
+            description={
+              story.lead ||
+              "Stories, collaborations and visual notes from the studio."
+            }
+            href={story.slug ? `/stories/${story.slug}` : "/stories"}
+            imageUrl={
+              story.hero_image_url ||
+              getProjectHeroImage(updatesProject) ||
+              homepageHeroImageUrl
+            }
+          />
+        ))}
 
         <FullScreenSingleImageUpdate
           id="editorial"
