@@ -133,6 +133,21 @@ function FullScreenSingleImageUpdate({
   );
 }
 
+function getProjectHeroImage(
+  project:
+    | {
+        hero_image_url?: string | null;
+      }
+    | null
+    | undefined,
+) {
+  if (!project || !("hero_image_url" in project)) {
+    return null;
+  }
+
+  return project.hero_image_url || null;
+}
+
 function FullScreenCollage({
   id,
   label,
@@ -415,8 +430,8 @@ export default async function Home() {
   const latestWorkImage =
     latestWork?.cover_image_url ||
     updatesSideImageUrl ||
-    updatesProject?.hero_image_url ||
-    secondProject?.hero_image_url ||
+    getProjectHeroImage(updatesProject) ||
+    getProjectHeroImage(secondProject) ||
     homepageHeroImageUrl;
 
   return (
@@ -431,7 +446,7 @@ export default async function Home() {
           id="intro"
           label="Bilik Concept homepage visual"
           imageUrl={
-            heroProject?.hero_image_url ||
+            getProjectHeroImage(heroProject) ||
             latestWork?.cover_image_url ||
             homepageHeroImageUrl
           }
@@ -471,7 +486,7 @@ export default async function Home() {
           }
           imageUrl={
             latestEditorial?.cover_image_url ||
-            secondProject?.hero_image_url ||
+            getProjectHeroImage(secondProject) ||
             latestWork?.cover_image_url ||
             homepageHeroImageUrl
           }
@@ -480,9 +495,9 @@ export default async function Home() {
         <ProjectIndexSection
           projects={latestWorkProjects}
           imageUrl={
-            thirdProject?.hero_image_url ||
+            getProjectHeroImage(thirdProject) ||
             latestWork?.cover_image_url ||
-            secondProject?.hero_image_url ||
+            getProjectHeroImage(secondProject) ||
             homepageHeroImageUrl
           }
         />
