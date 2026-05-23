@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import PublicBlackHeader from "@/components/PublicBlackHeader";
 import Link from "next/link";
 import { notFound } from "next/navigation";

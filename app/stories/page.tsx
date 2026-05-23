@@ -1,5 +1,8 @@
-import PublicBlackHeader from "@/components/PublicBlackHeader";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import Link from "next/link";
+import PublicBlackHeader from "@/components/PublicBlackHeader";
 import { getPublishedStories } from "@/lib/bilik-stories";
 
 export default async function StoriesPage() {
@@ -9,20 +12,22 @@ export default async function StoriesPage() {
     <main className="min-h-screen bg-white text-black">
       <PublicBlackHeader />
 
-
-
-      <section className="mx-auto grid min-h-screen w-full max-w-[1680px] content-between px-5 py-8 md:px-8">
-
-        <div className="py-20">
+      <section className="mx-auto grid min-h-screen w-full max-w-[1680px] content-between px-5 pb-10 pt-28 md:px-8">
+        <div>
           <p className="mb-6 text-[10px] uppercase tracking-[0.42em] text-black/35">
-            Editorial archive
+            Bilik Concept / Stories
           </p>
 
           <h1 className="max-w-5xl text-6xl font-medium leading-[0.86] tracking-[-0.08em] md:text-[9rem]">
-            Stories from
+            Apple
             <br />
-            the studio.
+            Hour™.
           </h1>
+
+          <p className="mt-8 max-w-md text-sm leading-6 text-black/50">
+            Editorial notes, visual stories, collaborations and studio updates
+            from Bilik Concept.
+          </p>
         </div>
 
         {stories.length > 0 ? (
@@ -46,10 +51,10 @@ export default async function StoriesPage() {
 
                 <div>
                   <p className="mb-3 text-[10px] uppercase tracking-[0.28em] text-black/35">
-                    {story.eyebrow || "Bilik Concept Story"}
+                    {story.eyebrow || "Apple Hour™"}
                   </p>
 
-                  <h2 className="text-3xl font-medium leading-[0.92] tracking-[-0.065em]">
+                  <h2 className="text-4xl font-medium leading-[0.88] tracking-[-0.07em]">
                     {story.title}
                   </h2>
 
