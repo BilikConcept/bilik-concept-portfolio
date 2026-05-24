@@ -7,7 +7,6 @@ const menuItems = [
   ["Home", "/"],
   ["Work", "/work"],
   ["Stories", "/stories"],
-  ["Access", "/access"],
 ];
 
 export default function StoriesHeader() {
