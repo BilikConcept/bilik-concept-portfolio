@@ -18,7 +18,6 @@ export default async function WorkPage() {
     title: gallery.title,
     eyebrow: "Work / Gallery",
     description: gallery.description,
-    teamNote: gallery.team_note,
     imageUrl: gallery.cover_image_url,
   }));
 

@@ -9,7 +9,6 @@ export type PublicGallery = {
   title: string;
   slug: string;
   description: string | null;
-  team_note: string | null;
   cover_image_url: string | null;
   status: "draft" | "published";
   sort_order: number;

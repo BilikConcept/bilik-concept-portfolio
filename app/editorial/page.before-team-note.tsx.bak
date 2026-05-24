@@ -9,16 +9,15 @@ import {
 } from "@/components/PublicArchive";
 import { getPublishedGalleries } from "@/lib/public-galleries";
 
-export default async function WorkPage() {
-  const galleries = await getPublishedGalleries("work");
+export default async function EditorialPage() {
+  const galleries = await getPublishedGalleries("editorial");
 
   const items = galleries.map((gallery) => ({
     id: gallery.id,
-    href: `/work/${gallery.slug}`,
+    href: `/editorial/${gallery.slug}`,
     title: gallery.title,
-    eyebrow: "Work / Gallery",
+    eyebrow: "Editorial / Gallery",
     description: gallery.description,
-    teamNote: gallery.team_note,
     imageUrl: gallery.cover_image_url,
   }));
 
@@ -28,16 +27,16 @@ export default async function WorkPage() {
 
       <PublicArchiveShell>
         <PublicArchiveHeader
-          eyebrow="Bilik Concept / Work"
-          titleTop="Selected"
-          titleBottom="work."
-          description="A composed index of selected projects, visual systems, campaigns and content direction shaped for brands with atmosphere."
+          eyebrow="Bilik Concept / Editorial"
+          titleTop="Editorial"
+          titleBottom="archive."
+          description="A visual archive of editorials, portraits, atmosphere studies and quiet image-led stories."
         />
 
         <PublicArchiveGrid
-          variant="work"
+          variant="editorial"
           items={items}
-          emptyLabel="No published work galleries yet."
+          emptyLabel="No published editorial galleries yet."
         />
       </PublicArchiveShell>
     </main>

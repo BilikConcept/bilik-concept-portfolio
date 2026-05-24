@@ -18,6 +18,7 @@ export default async function EditorialPage() {
     title: gallery.title,
     eyebrow: "Editorial / Gallery",
     description: gallery.description,
+    teamNote: gallery.team_note,
     imageUrl: gallery.cover_image_url,
   }));
 

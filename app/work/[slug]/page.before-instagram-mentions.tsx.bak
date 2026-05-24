@@ -16,30 +16,6 @@ type PageProps = {
   }>;
 };
 
-function renderInstagramMentions(text: string) {
-  const parts = text.split(/(@[a-zA-Z0-9._]+)/g);
-
-  return parts.map((part, index) => {
-    if (/^@[a-zA-Z0-9._]+$/.test(part)) {
-      const username = part.slice(1);
-
-      return (
-        <a
-          key={`${part}-${index}`}
-          href={`https://www.instagram.com/${username}`}
-          target="_blank"
-          rel="noreferrer"
-          className="underline decoration-black/25 underline-offset-4 transition hover:decoration-black"
-        >
-          {part}
-        </a>
-      );
-    }
-
-    return <span key={`${part}-${index}`}>{part}</span>;
-  });
-}
-
 function GalleryImage({
   image,
   title,
@@ -212,7 +188,7 @@ export default async function WorkGalleryPage({ params }: PageProps) {
 
               {gallery.description ? (
                 <p className="mt-8 max-w-md text-base leading-[1.35] tracking-[-0.03em] text-black/55">
-                  {renderInstagramMentions(gallery.description)}
+                  {gallery.description}
                 </p>
               ) : null}
 
@@ -232,7 +208,7 @@ export default async function WorkGalleryPage({ params }: PageProps) {
                           key={`${gallery.slug}-team-${index}`}
                           className="text-[10px] uppercase leading-5 tracking-[0.16em] text-black/45"
                         >
-                          {renderInstagramMentions(line)}
+                          {line}
                         </p>
                       ))}
                   </div>

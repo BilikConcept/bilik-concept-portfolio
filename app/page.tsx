@@ -419,6 +419,7 @@ export default async function Home() {
     title: gallery.title,
     slug: gallery.slug,
     description: gallery.description,
+    teamNote: gallery.team_note,
     cover_image_url: gallery.cover_image_url,
   }));
 

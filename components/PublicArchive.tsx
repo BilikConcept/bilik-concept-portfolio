@@ -9,6 +9,7 @@ type ArchiveItem = {
   title: string;
   eyebrow: string;
   description?: string | null;
+  teamNote?: string | null;
   imageUrl?: string | null;
 };
 
