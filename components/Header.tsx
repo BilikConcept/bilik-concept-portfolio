@@ -8,7 +8,6 @@ const menuItems = [
   ["Stories", "/stories"],
   ["Editorial", "/editorial"],
   ["Studio", "/studio"],
-  ["Services", "/services"],
   ["Contact", "/contact"],
 ];
 
