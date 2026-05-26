@@ -19,6 +19,8 @@ export type BilikStory = {
   homepage_nav_label: string | null;
   homepage_sort_order: number | null;
   published_at: string | null;
+  moodboard_token?: string | null;
+  moodboard_published_at?: string | null;
   created_at?: string | null;
 };
 
@@ -91,6 +93,28 @@ export async function getPublishedStoryBySlug(slug: string) {
     .select("*")
     .eq("slug", slug)
     .eq("status", "published")
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return data as BilikStory;
+}
+
+export async function getMoodboardStoryByToken(token: string) {
+  const supabase = getSupabaseClient();
+  const cleanToken = token?.trim();
+
+  if (!supabase || !cleanToken) {
+    return null;
+  }
+
+  const { data, error } = await supabase
+    .from("bilik_stories")
+    .select("*")
+    .eq("moodboard_token", cleanToken)
+    .eq("status", "moodboard")
     .maybeSingle();
 
   if (error || !data) {

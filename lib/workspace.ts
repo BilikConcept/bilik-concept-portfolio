@@ -47,9 +47,11 @@ export type PortfolioArticle = {
   excerpt: string | null;
   content: string | null;
   hero_image_url: string | null;
-  status?: string;
+  status?: "draft" | "published" | "moodboard" | string;
   is_featured?: boolean;
   published_at?: string | null;
+  moodboard_token?: string | null;
+  moodboard_published_at?: string | null;
 };
 
 export type PortfolioMedia = {
@@ -192,6 +194,27 @@ export async function getArticleBySlug(slug: string) {
       content: fallback.description,
       hero_image_url: null,
     } as PortfolioArticle;
+  }
+
+  return data as PortfolioArticle;
+}
+
+export async function getMoodboardArticleByToken(token: string) {
+  const cleanToken = token?.trim();
+
+  if (!cleanToken) {
+    notFound();
+  }
+
+  const { data, error } = await supabase
+    .from("portfolio_articles")
+    .select("*")
+    .eq("moodboard_token", cleanToken)
+    .eq("status", "moodboard")
+    .single();
+
+  if (error || !data) {
+    notFound();
   }
 
   return data as PortfolioArticle;
